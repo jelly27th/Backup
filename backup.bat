@@ -33,6 +33,7 @@ echo #############originalPath=%originalPath%#############
 @REM forfiles /P "%originalPath%\" /S /M *.* /D -3 /C "cmd /c echo @isdir" 
 forfiles /P "%originalPath%\" /S /M *.* /D -3 /C "cmd /c del /s/q @path"
 
+@REM Delete empty folders under backup directory
 for /f "delims=" %%a in ('dir /ad /b /s "%originalPath%"^|sort /r') do (
    echo %%a
    rd "%%a">nul 2>nul && echo empty folder "%%a" delete sucessfully!
