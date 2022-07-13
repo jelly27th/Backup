@@ -1,5 +1,8 @@
 @echo off
 
+@REM run as administrator
+%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit cd /d "%~dp0"
+
 @REM Set the path to bz.exe
 set bz=C:\SOFEWARE\Bandizip\bz.exe
 
@@ -23,9 +26,18 @@ set originalPath=C:\STORAGE\Backup\
 %bz% c -aoa -y -fmt:zip "%targetPath%Pictures" "%Pictures%"
 %bz% c -aoa -y -fmt:zip "%targetPath%Blender" "%Blender%"
 
-echo %originalPath%
+echo #############originalPath=%originalPath%#############
 @REM Delete backups folders older than 3 days
-forfiles /P "%originalPath%\" /S /M *.* /D -3 /C "cmd /c rd /s/q @path" 
+@REM forfiles /P "%originalPath%\" /S /M *.* /D -3 /C "cmd /c rd /s/q @path" 
+@REM forfiles /P "%originalPath%\" /S /M *.* /D -3 /C "cmd /c echo @path" 
+@REM forfiles /P "%originalPath%\" /S /M *.* /D -3 /C "cmd /c echo @isdir" 
+forfiles /P "%originalPath%\" /S /M *.* /D -3 /C "cmd /c del /s/q @path"
+
+for /f "delims=" %%a in ('dir /ad /b /s "%originalPath%"^|sort /r') do (
+   echo %%a
+   rd "%%a">nul 2>nul && echo empty folder "%%a" delete sucessfully!
+)
 
 echo #############end backup####################
+pause
 exit
